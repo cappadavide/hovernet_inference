@@ -116,7 +116,7 @@ class Model_NP_HV(Model):
 
         ####
         with argscope(Conv2D, activation=tf.identity, use_bias=False, # K.he initializer
-                      W_init=tf.variance_scaling_initializer(scale=2.0, mode='fan_out')), \
+                      W_init=tf.keras.initializers.variance_scaling(scale=2.0, mode='fan_out')), \
                 argscope([Conv2D, BatchNorm], data_format=self.data_format):
 
             i = tf.transpose(images, [0, 3, 1, 2])
