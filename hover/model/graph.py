@@ -16,9 +16,9 @@ def upsample2x(name, x):
 ####
 def res_blk(name, l, ch, ksize, count, split=1, strides=1):
     ch_in = l.get_shape().as_list()
-    with tf.variable_scope(name):
+    with tf.compat.v1.variable_scope(name):
         for i in range(0, count):
-            with tf.variable_scope('block' + str(i)):  
+            with tf.compat.v1.variable_scope('block' + str(i)):  
                 x = l if i == 0 else BNReLU('preact', l)
                 x = Conv2D('conv1', x, ch[0], ksize[0], activation=BNReLU)
                 x = Conv2D('conv2', x, ch[1], ksize[1], split=split, 
@@ -32,9 +32,9 @@ def res_blk(name, l, ch, ksize, count, split=1, strides=1):
     return l
 ####
 def dense_blk(name, l, ch, ksize, count, split=1, padding='valid'):
-    with tf.variable_scope(name):
+    with tf.compat.v1.variable_scope(name):
         for i in range(0, count):
-            with tf.variable_scope('blk/' + str(i)):
+            with tf.compat.v1.variable_scope('blk/' + str(i)):
                 x = BNReLU('preact_bna', l)
                 x = Conv2D('conv1', x, ch[0], ksize[0], padding=padding, activation=BNReLU)
                 x = Conv2D('conv2', x, ch[1], ksize[1], padding=padding, split=split)
@@ -68,8 +68,8 @@ def encoder(i):
 ####
 def decoder(name, i):
     pad = 'valid' # to prevent boundary artifacts
-    with tf.variable_scope(name):
-        with tf.variable_scope('u3'):
+    with tf.compat.v1.variable_scope(name):
+        with tf.compat.v1.variable_scope('u3'):
             u3 = upsample2x('rz', i[-1])
             u3_sum = tf.add_n([u3, i[-2]])
 
@@ -77,7 +77,7 @@ def decoder(name, i):
             u3 = dense_blk('dense', u3, [128, 32], [1, 3], 8, split=4, padding=pad)
             u3 = Conv2D('convf', u3, 512, 1, strides=1)   
         ####
-        with tf.variable_scope('u2'):          
+        with tf.compat.v1.variable_scope('u2'):          
             u2 = upsample2x('rz', u3)
             u2_sum = tf.add_n([u2, i[-3]])
 
@@ -85,7 +85,7 @@ def decoder(name, i):
             u2 = dense_blk('dense', u2x, [128, 32], [1, 3], 4, split=4, padding=pad)
             u2 = Conv2D('convf', u2, 256, 1, strides=1)   
         ####
-        with tf.variable_scope('u1'):          
+        with tf.compat.v1.variable_scope('u1'):          
             u1 = upsample2x('rz', u2)
             u1_sum = tf.add_n([u1, i[-4]])
 
