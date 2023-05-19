@@ -9,7 +9,8 @@ from scipy.ndimage.morphology import (
     distance_transform_edt,
 )
 
-from skimage.morphology import remove_small_objects, watershed
+from skimage.morphology import remove_small_objects
+from skimage.segmentation import watershed
 from hover.misc.utils import get_bounding_box
 
 import warnings
