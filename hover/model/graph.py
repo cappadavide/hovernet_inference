@@ -100,8 +100,8 @@ class Model(ModelDesc):
         assert tf.test.is_gpu_available()
 
     def inputs(self):
-        return [InputDesc(tf.float32, [None] + self.input_shape + [3], 'images'),
-                InputDesc(tf.float32, [None] + self.mask_shape  + [None], 'truemap-coded')]
+        return [tf.TensorSpec([None] + self.input_shape + [3], tf.float32, 'images'),
+                tf.TensorSpec([None] + self.mask_shape  + [None], tf.float32, 'truemap-coded')]
 ####
 
 class Model_NP_HV(Model):
