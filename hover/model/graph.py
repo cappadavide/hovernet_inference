@@ -99,7 +99,7 @@ class Model(ModelDesc):
         super(Model, self).__init__()
         assert tf.test.is_gpu_available()
 
-    def _get_inputs(self):
+    def inputs(self):
         return [InputDesc(tf.float32, [None] + self.input_shape + [3], 'images'),
                 InputDesc(tf.float32, [None] + self.mask_shape  + [None], 'truemap-coded')]
 ####
@@ -112,9 +112,7 @@ class Model_NP_HV(Model):
         self.input_norm = input_norm 
         self.data_format = 'NCHW'
 
-    def _build_graph(self, inputs):
-        
-        images, truemap_coded = inputs
+    def build_graph(self, images, truemap_coded):
 
         ####
         with argscope(Conv2D, activation=tf.identity, use_bias=False, # K.he initializer
