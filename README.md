@@ -1,5 +1,7 @@
 # HoVer-Net Inference Code
 
+**(This is a code-updated version of HoverNet in order to make it work with most recent modules' versions. Check requirements.txt file)**
+
 HoVer-Net Tile and WSI processing code for simultaneous nuclear segmentation and classification in histology images. <br />
 
 [Link](https://www.sciencedirect.com/science/article/abs/pii/S1361841519301045?via%3Dihub) to Medical Image Analysis paper.  <br />
