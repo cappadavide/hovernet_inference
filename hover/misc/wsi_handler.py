@@ -3,8 +3,7 @@ import cv2
 import numpy as np
 from skimage import img_as_ubyte
 from skimage import color
-
-import openslide
+import os
 import glymur
 
 
@@ -216,7 +215,14 @@ class OpenSlideHandler(FileHandler):
         return self.file_ptr.level_dimensions[level]
 
 
-def get_wsi_handler(path, backend):
+def get_wsi_handler(path, backend,openslide_path):
+    if hasattr(os, 'add_dll_directory'):
+    # Python >= 3.8 on Windows
+        with os.add_dll_directory(openslide_path):
+            import openslide
+    else:
+        import openslide
+
     if backend in ["svs", "ndpi"]:
         return OpenSlideHandler(path)
     elif backend == "jp2":

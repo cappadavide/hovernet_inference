@@ -3,7 +3,7 @@
 Usage:
   run.py [--gpu=<id>] [--mode=<mode>] [--model=<path>] [--input_dir=<path>] [--output_dir=<path>] \
       [--cache_dir=<path>] [--batch_size=<n>] [--inf_tile_shape=<n>] [--proc_tile_shape=<n>] \
-      [--postproc_workers=<n>] [--return_probs]
+      [--postproc_workers=<n>] [--return_probs] [--openslide-path=<path>]
   run.py (-h | --help)
   run.py --version
 
@@ -21,7 +21,7 @@ Options:
   --proc_tile_shape=<n>      Size of tiles for post processing (assumes square shape). [default: 2048]
   --postproc_workers=<n>     Number of workers for post processing. [default: 10]
   --return_probs             Whether to return the class probabilities for each nucleus
-
+  --openslide-path=<path>           Path to Openslide binary files
 """
 
 
@@ -281,6 +281,7 @@ class InferWSI(object):
         proc_tile_shape: dimensions of tiles during post processing [h,w]
         model_path: path to model checkpoints
         input_dir: input directory containing WSIs
+        openslide_dir: Openslide directory containing binary files
         output_dir: output directory where files will be saved
         cache_dir: directory where temporary files will be save (ensure around 100GB space)
         return_probs (bool): whether to return the per class probabilities of each nucleus
@@ -328,7 +329,7 @@ class InferWSI(object):
         self.return_probs = args["--return_probs"]
         self.batch_size = int(args["--batch_size"])
         self.postproc_workers = int(args["--postproc_workers"])
-
+        self.openslide_dir = os.path.abspath(args["--openslide-path"])
         # get the model name from the checkpoint
         model_name = os.path.basename(self.model_path)
         self.model_name = model_name.split('.')[0]
@@ -531,7 +532,7 @@ class InferWSI(object):
     def load_wsi(self, filename):
         """Load a WSI and get information"""
         wsi_ext = filename.split(".")[-1]
-        self.wsi_handler = get_wsi_handler(filename, wsi_ext)
+        self.wsi_handler = get_wsi_handler(filename, wsi_ext,self.openslide_dir)
 
         self.wsi_ds_lvl = self.wsi_handler.metadata["level_downsamples"][
             self.wsi_proc_lvl
